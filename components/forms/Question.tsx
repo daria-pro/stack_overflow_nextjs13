@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import * as z from "zod";
 import Image from "next/image";
@@ -20,8 +20,11 @@ import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 import { Badge } from "../ui/badge";
 
+const type: any = "create";
+
 const Question = () => {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const log = () => {
     if (editorRef.current) {
@@ -40,6 +43,15 @@ const Question = () => {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+    setIsSubmitting(true);
+    try {
+      // make an async call to your API -> create a question
+      // contain all form data
+      // navigate to home page
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -210,7 +222,17 @@ const Question = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          className="primary-gradient w-fit !text-light-900"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>{type === "edit" ? "Editing..." : "Posting..."}</>
+          ) : (
+            <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
+          )}
+        </Button>
       </form>
     </Form>
   );
